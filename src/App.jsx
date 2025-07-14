@@ -1,7 +1,18 @@
+import { Routes, Route } from "react-router-dom";
+import Auth from "./components/Auth";
+import Dashboard from "./pages/Dashboard";
+import Contacts from "./pages/Contacts";
+import Tasks from "./pages/Tasks";
+import ResetPassword from "./pages/ResetPassword";
+
 export default function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold text-blue-600">Hello from SparkCRM</h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/login" element={<Auth />} />
+      <Route path="/contacts" element={<Contacts />} />
+      <Route path="/tasks" element={<Tasks />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+    </Routes>
   );
 }
