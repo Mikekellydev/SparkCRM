@@ -1,4 +1,3 @@
-// src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import Auth from "./components/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -7,17 +6,18 @@ import Tasks from "./pages/Tasks";
 import ResetPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
+
 export default function App() {
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* Redirect root to dashboard */}
+      <Route path="/" element={<Navigate to="/dashboard" />} />
+
+      {/* Public routes */}
       <Route path="/login" element={<Auth />} />
       <Route path="/reset-password" element={<ResetPassword />} />
 
-      {/* Redirect root to dashboard */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
-      {/* Protected Routes */}
+      {/* Protected routes */}
       <Route
         path="/dashboard"
         element={
@@ -43,8 +43,7 @@ export default function App() {
         }
       />
 
-      {/* 404 Not Fou<Route path="*" element={<NotFound />} />nd */}
-      <Route path="*" element={<h1 className="text-center p-10 text-2xl">404 - Page Not Found</h1>} />
+      {/* 404 fallback */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
