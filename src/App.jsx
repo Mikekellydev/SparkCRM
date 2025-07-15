@@ -6,7 +6,7 @@ import Contacts from "./pages/Contacts";
 import Tasks from "./pages/Tasks";
 import ResetPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import NotFound from "./pages/NotFound";
 export default function App() {
   return (
     <Routes>
@@ -43,8 +43,9 @@ export default function App() {
         }
       />
 
-      {/* 404 Not Found */}
+      {/* 404 Not Fou<Route path="*" element={<NotFound />} />nd */}
       <Route path="*" element={<h1 className="text-center p-10 text-2xl">404 - Page Not Found</h1>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
