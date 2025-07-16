@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -34,6 +36,36 @@ export default function Dashboard() {
 
   const handleAddContact = () => navigate('/contacts');
   const handleAddTask = () => navigate('/tasks');
+
+  const handleDeleteContact = async (id) => {
+    const { error } = await supabase.from('contacts').delete().eq('id', id);
+    if (error) {
+      toast.error('Failed to delete contact');
+    } else {
+      setContacts(contacts.filter(c => c.id !== id));
+      toast.success('Contact deleted successfully');
+    }
+  };
+
+  const handleDeleteTask = async (id) => {
+    const { error } = await supabase.from('tasks').delete().eq('id', id);
+    if (error) {
+      toast.error('Failed to delete task');
+    } else {
+      setTasks(tasks.filter(t => t.id !== id));
+      toast.success('Task deleted successfully');
+    }
+  };
+
+  const handleCompleteTask = async (id) => {
+    const { error } = await supabase.from('tasks').update({ completed: true }).eq('id', id);
+    if (error) {
+      toast.error('Failed to complete task');
+    } else {
+      setTasks(tasks.map(task => task.id === id ? { ...task, completed: true } : task));
+      toast.success('Task marked as complete');
+    }
+  };
 
   return (
     <div className="flex h-screen">
@@ -98,8 +130,18 @@ export default function Dashboard() {
           <div className="bg-white rounded shadow p-4">
             <ul className="space-y-2">
               {contacts.map(contact => (
-                <li key={contact.id} className="border-b pb-2">
-                  {contact.name} - {contact.email}
+                <li key={contact.id} className="border-b pb-2 flex justify-between items-center">
+                  <span>{contact.name} - {contact.email}</span>
+                  <div className="space-x-2">
+                    <button 
+                      onClick={() => navigate(`/contacts?id=${contact.id}`)}
+                      className="text-blue-600 hover:underline"
+                    >Edit</button>
+                    <button 
+                      onClick={() => handleDeleteContact(contact.id)}
+                      className="text-red-600 hover:underline"
+                    >Delete</button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -112,8 +154,24 @@ export default function Dashboard() {
           <div className="bg-white rounded shadow p-4">
             <ul className="space-y-2">
               {tasks.map(task => (
-                <li key={task.id} className="border-b pb-2">
-                  {task.title} - Due {task.due_date}
+                <li key={task.id} className="border-b pb-2 flex justify-between items-center">
+                  <span>{task.title} - Due {task.due_date}</span>
+                  <div className="space-x-2">
+                    {!task.completed && (
+                      <button 
+                        onClick={() => handleCompleteTask(task.id)}
+                        className="text-green-600 hover:underline"
+                      >Complete</button>
+                    )}
+                    <button 
+                      onClick={() => navigate(`/tasks?id=${task.id}`)}
+                      className="text-blue-600 hover:underline"
+                    >Edit</button>
+                    <button 
+                      onClick={() => handleDeleteTask(task.id)}
+                      className="text-red-600 hover:underline"
+                    >Delete</button>
+                  </div>
                 </li>
               ))}
             </ul>

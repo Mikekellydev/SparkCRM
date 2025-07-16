@@ -1,72 +1,106 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 
 export default function Tasks() {
+  const [title, setTitle] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const [tasks, setTasks] = useState([]);
-  const [title, setTitle] = useState('');
-  const [dueDate, setDueDate] = useState('');
+  const [editingId, setEditingId] = useState(null);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      const { data, error } = await supabase.from('tasks').select('*');
-      if (!error) setTasks(data);
-    };
     fetchTasks();
-  }, []);
 
-  const handleAddTask = async (e) => {
-    e.preventDefault();
-    const { data, error } = await supabase
-      .from('tasks')
-      .insert([{ title, due_date: dueDate, completed: false }]);
-
-    if (!error) {
-      setTasks([...tasks, ...data]);
-      setTitle('');
-      setDueDate('');
+    const taskId = searchParams.get("id");
+    if (taskId) {
+      const fetchTask = async () => {
+        const { data } = await supabase
+          .from("tasks")
+          .select("*")
+          .eq("id", taskId)
+          .single();
+        if (data) {
+          setTitle(data.title);
+          setDueDate(data.due_date);
+          setEditingId(data.id);
+        }
+      };
+      fetchTask();
     }
+  }, [searchParams]);
+
+  const fetchTasks = async () => {
+    const { data } = await supabase
+      .from("tasks")
+      .select("*")
+      .order("due_date", { ascending: true });
+    setTasks(data || []);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!title) return;
+
+    const user = await supabase.auth.getUser();
+    const userId = user.data.user?.id;
+
+    if (editingId) {
+      await supabase
+        .from("tasks")
+        .update({ title, due_date: dueDate })
+        .eq("id", editingId);
+    } else {
+      await supabase
+        .from("tasks")
+        .insert({ title, due_date: dueDate, user_id: userId });
+    }
+
+    setTitle("");
+    setDueDate("");
+    setEditingId(null);
+    fetchTasks();
+  };
+
+  const handleEdit = (task) => {
+    setTitle(task.title);
+    setDueDate(task.due_date);
+    setEditingId(task.id);
+  };
+
+  const handleDelete = async (id) => {
+    await supabase.from("tasks").delete().eq("id", id);
+    fetchTasks();
   };
 
   const toggleComplete = async (task) => {
-    const { data, error } = await supabase
-      .from('tasks')
+    await supabase
+      .from("tasks")
       .update({ completed: !task.completed })
-      .eq('id', task.id);
-
-    if (!error && data.length > 0) {
-      setTasks((prev) =>
-        prev.map((t) => (t.id === task.id ? data[0] : t))
-      );
-    }
+      .eq("id", task.id);
+    fetchTasks();
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Tasks</h1>
-
-      <form onSubmit={handleAddTask} className="mb-8 space-y-4">
+    <div className="max-w-xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-4">Tasks</h1>
+      <form onSubmit={handleSubmit} className="mb-4 space-y-2">
         <input
+          className="w-full border p-2"
           type="text"
-          placeholder="Task Title"
-          className="w-full p-2 border rounded"
+          placeholder="Task title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          required
         />
         <input
+          className="w-full border p-2"
           type="date"
-          className="w-full p-2 border rounded"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
-          required
         />
-        <button
-          type="submit"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        >
-          Add Task
+        <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded" type="submit">
+          {editingId ? "Update Task" : "Add Task"}
         </button>
       </form>
 
@@ -74,31 +108,29 @@ export default function Tasks() {
         {tasks.map((task) => (
           <li
             key={task.id}
-            className="border-b pb-2 flex justify-between items-center"
+            className="bg-white shadow p-3 rounded flex justify-between items-center"
           >
-            <div>
-              <p className={task.completed ? 'line-through' : ''}>
-                <strong>{task.title}</strong> — Due {task.due_date}
-              </p>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => toggleComplete(task)}
+              />
+              <span className={task.completed ? "line-through text-gray-500" : ""}>
+                {task.title} {task.due_date ? `(Due: ${task.due_date})` : ""}
+              </span>
             </div>
-            <button
-              onClick={() => toggleComplete(task)}
-              className={`px-3 py-1 rounded ${
-                task.completed ? 'bg-yellow-500' : 'bg-blue-500'
-              } text-white`}
-            >
-              {task.completed ? 'Undo' : 'Complete'}
-            </button>
+            <div className="space-x-2">
+              <button onClick={() => handleEdit(task)} className="text-blue-500">
+                Edit
+              </button>
+              <button onClick={() => handleDelete(task.id)} className="text-red-500">
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
-
-      <button
-        onClick={() => navigate('/')}
-        className="mt-6 text-blue-500 hover:underline"
-      >
-        ← Back to Dashboard
-      </button>
     </div>
   );
 }
