@@ -70,8 +70,8 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 text-white p-6 space-y-6">
-        <h2 className="text-xl font-bold">SparkCRM</h2>
+      <aside className="w-64 bg-gray-900 text-white p-6 space-y-6">
+        <h2 className="text-2xl font-bold tracking-tight">SparkCRM</h2>
         <nav className="space-y-2">
           <a href="/" className="block hover:text-yellow-400">Dashboard</a>
           <a href="/contacts" className="block hover:text-yellow-400">Contacts</a>
@@ -79,7 +79,7 @@ export default function Dashboard() {
           <a href="/reset-password" className="block hover:text-yellow-400">Reset Password</a>
           <button
             onClick={signOut}
-            className="mt-4 bg-red-500 hover:bg-red-600 px-4 py-2 rounded"
+            className="mt-4 bg-red-600 hover:bg-red-700 px-4 py-2 rounded w-full text-white"
           >
             Sign Out
           </button>
@@ -87,51 +87,51 @@ export default function Dashboard() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-gray-100 p-6 overflow-y-auto">
+      <main className="flex-1 bg-gray-100 p-8 overflow-y-auto">
         <h1 className="text-3xl font-bold mb-6">
           Welcome {user ? user.email : ''}
         </h1>
 
         {/* Widgets */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="bg-white p-4 rounded shadow">
-            <h2 className="text-lg font-semibold">Total Contacts</h2>
-            <p className="text-2xl font-bold">{contacts.length}</p>
+          <div className="bg-white p-6 rounded-lg shadow border">
+            <h2 className="text-lg font-semibold text-gray-700">Total Contacts</h2>
+            <p className="text-3xl font-bold text-gray-900 mt-2">{contacts.length}</p>
           </div>
-          <div className="bg-white p-4 rounded shadow">
-            <h2 className="text-lg font-semibold">Tasks Due</h2>
-            <p className="text-2xl font-bold">{tasks.length}</p>
+          <div className="bg-white p-6 rounded-lg shadow border">
+            <h2 className="text-lg font-semibold text-gray-700">Tasks Due</h2>
+            <p className="text-3xl font-bold text-gray-900 mt-2">{tasks.length}</p>
           </div>
-          <div className="bg-white p-4 rounded shadow">
-            <h2 className="text-lg font-semibold">Completed Tasks</h2>
-            <p className="text-2xl font-bold">{tasks.filter(t => t.completed).length}</p>
+          <div className="bg-white p-6 rounded-lg shadow border">
+            <h2 className="text-lg font-semibold text-gray-700">Completed Tasks</h2>
+            <p className="text-3xl font-bold text-gray-900 mt-2">{tasks.filter(t => t.completed).length}</p>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <button 
             onClick={handleAddContact} 
-            className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded shadow"
+            className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg shadow-md transition"
           >
             Add Contact
           </button>
           <button 
             onClick={handleAddTask} 
-            className="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded shadow"
+            className="bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg shadow-md transition"
           >
             Add Task
           </button>
         </div>
 
         {/* Contacts Section */}
-        <section className="mb-6">
+        <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Recent Contacts</h2>
-          <div className="bg-white rounded shadow p-4">
-            <ul className="space-y-2">
+          <div className="bg-white rounded-lg shadow p-6 border">
+            <ul className="space-y-4">
               {contacts.map(contact => (
-                <li key={contact.id} className="border-b pb-2 flex justify-between items-center">
-                  <span>{contact.name} - {contact.email}</span>
+                <li key={contact.id} className="flex justify-between items-center">
+                  <span className="text-gray-800">{contact.name} - {contact.email}</span>
                   <div className="space-x-2">
                     <button 
                       onClick={() => navigate(`/contacts?id=${contact.id}`)}
@@ -151,11 +151,11 @@ export default function Dashboard() {
         {/* Tasks Section */}
         <section>
           <h2 className="text-2xl font-semibold mb-4">Upcoming Tasks</h2>
-          <div className="bg-white rounded shadow p-4">
-            <ul className="space-y-2">
+          <div className="bg-white rounded-lg shadow p-6 border">
+            <ul className="space-y-4">
               {tasks.map(task => (
-                <li key={task.id} className="border-b pb-2 flex justify-between items-center">
-                  <span>{task.title} - Due {task.due_date}</span>
+                <li key={task.id} className="flex justify-between items-center">
+                  <span className="text-gray-800">{task.title} - Due {task.due_date}</span>
                   <div className="space-x-2">
                     {!task.completed && (
                       <button 
