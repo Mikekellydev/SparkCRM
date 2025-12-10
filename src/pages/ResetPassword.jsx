@@ -1,4 +1,3 @@
-// src/pages/ResetPassword.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
@@ -22,28 +21,41 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex min-h-screen items-center justify-center bg-slate-950 px-4 text-slate-50">
       <form
         onSubmit={handleReset}
-        className="bg-white p-6 rounded shadow-md w-full max-w-md"
+        className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900/70 p-8 shadow-inner shadow-slate-950/40"
       >
-        <h2 className="text-2xl font-bold mb-4">Reset Your Password</h2>
-        <input
-          type="password"
-          placeholder="New Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded mb-4"
-          required
-        />
+        <div className="mb-4 space-y-1 text-center">
+          <p className="text-sm uppercase tracking-[0.25em] text-amber-300">
+            Security
+          </p>
+          <h2 className="text-2xl font-semibold text-white">
+            Reset your password
+          </h2>
+          <p className="text-sm text-slate-400">
+            Use a strong password to protect customer data.
+          </p>
+        </div>
+        <label className="block space-y-1 text-sm">
+          <span className="text-slate-300">New password</span>
+          <input
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3 py-2 text-slate-100 placeholder:text-slate-600 focus:border-amber-200/70 focus:outline-none"
+            required
+          />
+        </label>
         <button
           type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded"
+          className="mt-4 w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-300"
         >
-          Update Password
+          Update password
         </button>
         {message && (
-          <p className="mt-4 text-center text-sm text-gray-700">{message}</p>
+          <p className="mt-4 text-center text-sm text-slate-300">{message}</p>
         )}
       </form>
     </div>

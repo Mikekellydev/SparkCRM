@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 text-center px-4">
-      <h1 className="text-6xl font-bold text-gray-800 mb-4">404</h1>
-      <p className="text-xl text-gray-600 mb-6">Oops! Page not found.</p>
+    <div className="min-h-screen flex flex-col justify-center items-center bg-slate-950 text-center px-4 text-slate-50">
+      <h1 className="text-6xl font-bold text-white mb-4">404</h1>
+      <p className="text-xl text-slate-400 mb-6">We could not find that page.</p>
       <Link
         to="/dashboard"
-        className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        className="px-6 py-2 bg-amber-400 text-slate-950 rounded-xl hover:bg-amber-300 transition font-semibold"
       >
         Go to Dashboard
       </Link>
