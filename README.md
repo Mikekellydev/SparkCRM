@@ -1,69 +1,41 @@
-# React + TypeScript + Vite
+# SparkCRM
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SparkCRM is a lean CRM aimed at small and medium businesses that need Workday/ADP-like clarity without the enterprise price tag. It ships as a React + Vite SPA with Supabase authentication and a focused UI for contacts, tasks, and an operating dashboard.
 
-Currently, two official plugins are available:
+## Features
+- Authenticated access via Supabase with login, reset, and protected routes.
+- Dashboard with pipeline snapshot, quick actions, work queue, and performance guardrails.
+- Contact management with search, inline editing, and stats for recent growth.
+- Task management with due dates, overdue visibility, and completion tracking.
+- Responsive shell with consistent navigation, dark theme, and toast notifications.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting started
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Create `.env` (or `.env.local`) with your Supabase keys:
+   ```bash
+   VITE_SUPABASE_URL=your-project-url
+   VITE_SUPABASE_ANON_KEY=your-anon-key
+   ```
+3. Run the app:
+   ```bash
+   npm run dev
+   ```
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Build
+```bash
+npm run build
 ```
+Build output lands in `dist/`.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Deploying to GitHub Pages
+- The Vite base is set to `/SparkCRM/` in `vite.config.ts`. If your repo name changes, update that base path.
+- Typical flow: `npm run build`, push the `dist` folder to a `gh-pages` branch (or use a GitHub Action), and enable Pages to serve from that branch/folder.
+- Because this is an SPA, ensure Pages is configured to fall back to `index.html` (HashRouter is another option if you prefer).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Next steps
+- Wire Supabase tables to additional fields (company, phone, owner, stage).
+- Add billing/pricing surface for customers.
+- Layer in audit logs and role-based access.
